@@ -442,7 +442,7 @@ public class ControlPC : MonoBehaviour
             }
             else
             {
-                var trail = Instantiate(smokeTrailPrefabAR, hit.point, Quaternion.identity);
+                var trail = Instantiate(smokeTrailPrefabAR, barrel.position + cam.transform.TransformDirection(Vector3.forward) * 20, Quaternion.identity);
                 trail.gunBarrel = barrel;
             }
         }
@@ -489,6 +489,11 @@ public class ControlPC : MonoBehaviour
             currentWeapon = nextWeapon;
             isSwitching = false;
         }
+    }
+
+    public void BigBaddyLanding()
+    {
+        camAnim.SetTrigger("bigBaddyLanding");
     }
 
     void CheckHealth()

@@ -10,14 +10,17 @@ public class LilBaddy : MonoBehaviour
     Baddy baddy;
 
     public float gravity = 5;
-    public float checkForPCAfter = 1.5f;
-    private float pcCheckTime;
+    public float checkForNewTargetAfter = 1.5f;
+    private float checkTime;
 
     // Navigation
-    private Vector3 pcPosition;
+    public Transform[] targetPositions = new Transform[10];
+    private int currentTarget = 0;
 
     // Combat
     private bool isAttacking;
+    [HideInInspector]
+    public bool isHuntingPC;
 
 
     void Start()
@@ -25,6 +28,10 @@ public class LilBaddy : MonoBehaviour
         nma = GetComponent<NavMeshAgent>();
         cc = GetComponent<CharacterController>();
         baddy = GetComponent<Baddy>();
+        if (targetPositions.Length == 0)
+        {
+            targetPositions[0].position = GameManager.gm.pc.transform.position;
+        }
     }
 
 
@@ -45,13 +52,22 @@ public class LilBaddy : MonoBehaviour
 
     void MoveToPC()
     {
-        if (Time.time >= pcCheckTime)
+        if (Time.time >= checkTime)
         {
-            pcCheckTime = Time.time + checkForPCAfter;
-            if (pcPosition != GameManager.gm.pc.transform.position)
+            checkTime = Time.time + checkForNewTargetAfter;
+            if (!isHuntingPC && !isAttacking)
             {
-                pcPosition = GameManager.gm.pc.transform.position + Random.insideUnitSphere * 4;
-                nma.SetDestination(pcPosition);
+                for (int i = 0; i < 1; i++)
+                {
+                    currentTarget = Random.Range(0, targetPositions.Length - 1);
+                    if (!targetPositions[currentTarget]) i--;
+                }
+                nma.SetDestination(targetPositions[currentTarget].position + Random.insideUnitSphere * 4);
+            }
+            else if (isHuntingPC && targetPositions[0].position != GameManager.gm.pc.transform.position)
+            {
+                targetPositions[0].position = GameManager.gm.pc.transform.position;
+                nma.SetDestination(targetPositions[0].position + Random.insideUnitSphere * 4);
             }
         }
     }

@@ -30,6 +30,8 @@ public class Baddy : MonoBehaviour
     public ParticleSystem deathExplosionVFX;
     public DestroyIn destroyIn;
     public string destructionAnimationName;
+    public delegate void AddToDeathCount();
+    public AddToDeathCount deathCount;
 
     void Start()
     {
@@ -72,21 +74,21 @@ public class Baddy : MonoBehaviour
             particleProgress = 1 - ((health - (startHealth / 2.0f)) / (startHealth / 2.0f));
             initialMain.startColor = Color.Lerp(Color.clear, Color.black, particleProgress);
             var startSize = initialMain.startSize;
-            startSize.constantMin = Mathf.Lerp(0, .5f, particleProgress);
-            startSize.constantMax = Mathf.Lerp(0, 10, particleProgress);
-            initialEmission.rateOverTime = Mathf.Lerp(0, 20, particleProgress);
+            startSize.constantMin = Mathf.Lerp(0, initialDamageSizeMin, particleProgress);
+            startSize.constantMax = Mathf.Lerp(0, initialDamageSizeMax, particleProgress);
+            initialEmission.rateOverTime = Mathf.Lerp(initialDamageRateOverTime / 4, initialDamageRateOverTime, particleProgress);
         }
         else
         {
             particleProgress = 1 - (health / (startHealth / 2.0f));
             severeMain.startColor = Color.Lerp(Color.clear, Color.black, particleProgress);
             var startSize = severeMain.startSize;
-            startSize.constantMin = Mathf.Lerp(0, .5f, particleProgress);
-            startSize.constantMax = Mathf.Lerp(0, 10, particleProgress);
+            startSize.constantMin = Mathf.Lerp(0, severeDamageSizeMin, particleProgress);
+            startSize.constantMax = Mathf.Lerp(0, severeDamageSizeMax, particleProgress);
             var startSpeed = severeMain.startSpeed;
-            startSpeed.constantMin = Mathf.Lerp(0, 4, particleProgress);
-            startSpeed.constantMax = Mathf.Lerp(0, 10, particleProgress);
-            severeEmission.rateOverTime = Mathf.Lerp(0, 10, particleProgress);
+            startSpeed.constantMin = Mathf.Lerp(0, severeDamageSpeedMin, particleProgress);
+            startSpeed.constantMax = Mathf.Lerp(0, severeDamageSpeedMax, particleProgress);
+            severeEmission.rateOverTime = Mathf.Lerp(severeDamageRateOverTime / 4, severeDamageRateOverTime, particleProgress);
         }
     }
 
