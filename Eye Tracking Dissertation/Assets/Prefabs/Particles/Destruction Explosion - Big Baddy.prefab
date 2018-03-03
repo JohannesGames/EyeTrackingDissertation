@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 198833862554331148}
   - component: {fileID: 199698227512988474}
   - component: {fileID: 114351229287747464}
+  - component: {fileID: 114117705288368284}
   m_Layer: 0
   m_Name: Destruction Explosion - Big Baddy
   m_TagString: Untagged
@@ -259,6 +260,17 @@ Transform:
   m_Father: {fileID: 4234893966771138}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114117705288368284
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000268121638002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dba5aa4440b181468f8cedafd0c7bb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114351229287747464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7053,7 +7065,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1452271981
+  randomSeed: -124614827
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -13911,10 +13923,10 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1879451448
+  randomSeed: 1331343114
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -20729,10 +20741,10 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1264448651
+  randomSeed: -781612698
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -24186,10 +24198,10 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1341400016
+  randomSeed: 76559368
   InitialModule:
     serializedVersion: 3
     enabled: 1

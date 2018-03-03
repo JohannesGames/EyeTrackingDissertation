@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Baddy : MonoBehaviour
 {
-    private bool isDestroyed;
+    [HideInInspector]
+    public bool isDestroyed;
     public int health;
     private int startHealth;
     private float particleProgress = 0.0f;
@@ -27,6 +29,7 @@ public class Baddy : MonoBehaviour
     private ParticleSystem.EmissionModule severeEmission;
     public ParticleSystem deathExplosionVFX;
     public DestroyIn destroyIn;
+    public string destructionAnimationName;
 
     void Start()
     {
@@ -81,8 +84,8 @@ public class Baddy : MonoBehaviour
             startSize.constantMin = Mathf.Lerp(0, .5f, particleProgress);
             startSize.constantMax = Mathf.Lerp(0, 10, particleProgress);
             var startSpeed = severeMain.startSpeed;
-            startSpeed.constantMin = Mathf.Lerp(2, 4, particleProgress);
-            startSpeed.constantMax = Mathf.Lerp(5, 10, particleProgress);
+            startSpeed.constantMin = Mathf.Lerp(0, 4, particleProgress);
+            startSpeed.constantMax = Mathf.Lerp(0, 10, particleProgress);
             severeEmission.rateOverTime = Mathf.Lerp(0, 10, particleProgress);
         }
     }
@@ -90,14 +93,29 @@ public class Baddy : MonoBehaviour
     private void Explode()
     {
         Instantiate(deathExplosionVFX, transform.position, Quaternion.identity);
-        GameManager.gm.pc.camAnim.SetTrigger("bigExplosion");
+        Invoke("StopVFX", 1);
+        GameManager.gm.pc.camAnim.SetTrigger(destructionAnimationName);
         GameManager.gm.pc.camAnim.speed = 1;
-        criticalPoint.GetComponent<SphereCollider>().enabled = false;
-        baddyBody.enabled = false;
-        baddyBase.enabled = false;
+        //criticalPoint.GetComponent<SphereCollider>().enabled = false;
+        //baddyBody.enabled = false;
+        //baddyBase.enabled = false;
+        criticalPoint.transform.parent = null;
         criticalPoint.GetComponent<DestroyIn>().enabled = true;
         criticalPoint.isKinematic = false;
         criticalPoint.AddForce(Vector3.up * 200 + (Vector3.left / Random.Range(1, 50)) + (Vector3.forward / Random.Range(1, 50)), ForceMode.VelocityChange);
+        criticalPoint.transform.parent = null;
+        var rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.AddForce(Vector3.up * 10, ForceMode.VelocityChange);
+        rb.AddTorque(Vector3.left * Random.Range(1, 5), ForceMode.VelocityChange);
+        NavMeshAgent tempNMA = GetComponent<NavMeshAgent>();
+        if (tempNMA) Destroy(tempNMA);
         destroyIn.enabled = true;
+    }
+
+    void StopVFX()
+    {
+        initialDamageVFX.Stop();
+        severeDamageVFX.Stop();
     }
 }
