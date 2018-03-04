@@ -8,6 +8,11 @@ public class TutorialLogic : MonoBehaviour
     private int currentCheckpoint = 0;
     private bool isComplete;
 
+    private void Start()
+    {
+        GameManager.gm.currentCheckpoint = allCheckpoints[currentCheckpoint];
+    }
+
     void Update()
     {
         if (!isComplete && allCheckpoints[currentCheckpoint].isComplete)
@@ -16,6 +21,7 @@ public class TutorialLogic : MonoBehaviour
             if (currentCheckpoint < allCheckpoints.Length - 1)
             {
                 currentCheckpoint++;
+                GameManager.gm.currentCheckpoint = allCheckpoints[currentCheckpoint];
                 allCheckpoints[currentCheckpoint].OnBegin();
             }
             else isComplete = true;

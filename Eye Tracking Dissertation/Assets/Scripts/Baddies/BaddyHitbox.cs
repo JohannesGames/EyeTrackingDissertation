@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class BaddyHitbox : MonoBehaviour
 {
-    private Baddy baddy;
+    public Baddy baddy;
     
 
     void Start()
     {
-        baddy = GetComponentInParent<Baddy>();
     }
 
     // Update is called once per frame

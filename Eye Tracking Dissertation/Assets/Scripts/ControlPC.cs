@@ -227,7 +227,7 @@ public class ControlPC : MonoBehaviour
 
             if (!isSwitching)   // can only fire if not switching weapons
             {
-                if (Input.GetButton("Fire1"))
+                if (Time.time > fireTime && Input.GetButton("Fire1"))
                 {
                     WeaponFire();
                 }
@@ -395,10 +395,9 @@ public class ControlPC : MonoBehaviour
     void WeaponFireAR()
     {
         isFiring = true;
-        gunAnim.speed = fireRateAR;
-        gunAnim.SetBool("isFiring", isFiring);
-        camAnim.speed = fireRateAR;
-        camAnim.SetBool("isFiring", isFiring);
+        gunAnim.speed = camAnim.speed = fireRateAR;
+        gunAnim.SetBool("isFiringAR", isFiring);
+        camAnim.SetBool("isFiringAR", isFiring);
         if (Time.time >= fireTime)
         {
             fireTime = Time.time + 1 / fireRateAR;
@@ -455,6 +454,10 @@ public class ControlPC : MonoBehaviour
 
     void WeaponFireGL()
     {
+        isFiring = true;
+        gunAnim.speed = camAnim.speed = fireRateGL;
+        gunAnim.SetBool("isFiringGL", isFiring);
+        camAnim.SetBool("isFiringGL", isFiring);
         if (Time.time >= fireTime)
         {
             fireTime = Time.time + 1 / fireRateGL;
@@ -463,6 +466,7 @@ public class ControlPC : MonoBehaviour
 
             ammoGL = Instantiate(ammoPrefabGL, barrel.position, Quaternion.identity);
             ammoGL.damage = weaponDamageGL;
+            ammoGL.explosionForce = knockbackForceGL;
             ammoGL.rb.velocity = fireTraj;
         }
     }
@@ -470,9 +474,11 @@ public class ControlPC : MonoBehaviour
     public void StoppedFiring()
     {
         isFiring = false;
-        gunAnim.SetBool("isFiring", isFiring);
-        gunAnim.speed = .5f;
-        camAnim.SetBool("isFiring", isFiring);
+        gunAnim.SetBool("isFiringAR", isFiring);
+        gunAnim.SetBool("isFiringGL", isFiring);
+        gunAnim.speed = 1;
+        camAnim.SetBool("isFiringAR", isFiring);
+        camAnim.SetBool("isFiringGL", isFiring);
         fireDuration = 0;
     }
 
@@ -489,7 +495,6 @@ public class ControlPC : MonoBehaviour
             gunAnim.SetTrigger("switchWeapon");
             gunAnim.speed = timeToSwitchWeapons;
             yield return new WaitForSeconds(timeToSwitchWeapons);
-            print("finished switch weapons");
             currentWeapon = nextWeapon;
             isSwitching = false;
         }

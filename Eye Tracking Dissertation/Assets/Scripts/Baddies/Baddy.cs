@@ -10,6 +10,7 @@ public class Baddy : MonoBehaviour
     public int health;
     private int startHealth;
     private float particleProgress = 0.0f;
+    public Rigidbody rb;
     public Rigidbody criticalPoint;
     public CapsuleCollider baddyBody;
     public CapsuleCollider baddyBase;
@@ -30,8 +31,6 @@ public class Baddy : MonoBehaviour
     public ParticleSystem deathExplosionVFX;
     public DestroyIn destroyIn;
     public string destructionAnimationName;
-    public delegate void AddToDeathCount();
-    public AddToDeathCount deathCount;
 
     void Start()
     {
@@ -113,6 +112,7 @@ public class Baddy : MonoBehaviour
         NavMeshAgent tempNMA = GetComponent<NavMeshAgent>();
         if (tempNMA) Destroy(tempNMA);
         destroyIn.enabled = true;
+        GameManager.gm.currentCheckpoint.AddToKillCounter();
     }
 
     void StopVFX()

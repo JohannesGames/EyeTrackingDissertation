@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public ControlPC pc;
 
+    // Game logic
+    public Checkpoint currentCheckpoint;
+
     // Baddies
     [Header("Baddies")]
     public BigBaddy bigBaddyPrefab;

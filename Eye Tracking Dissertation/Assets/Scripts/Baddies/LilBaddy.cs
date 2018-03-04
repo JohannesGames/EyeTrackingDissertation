@@ -14,7 +14,7 @@ public class LilBaddy : MonoBehaviour
     private float checkTime;
 
     // Navigation
-    public Transform[] targetPositions = new Transform[10];
+    public List<Transform> targetPositions = new List<Transform>();
     private int currentTarget = 0;
 
     // Combat
@@ -28,9 +28,9 @@ public class LilBaddy : MonoBehaviour
         nma = GetComponent<NavMeshAgent>();
         cc = GetComponent<CharacterController>();
         baddy = GetComponent<Baddy>();
-        if (targetPositions.Length == 0)
+        if (targetPositions.Count == 0)
         {
-            targetPositions[0].position = GameManager.gm.pc.transform.position;
+            targetPositions.Add(GameManager.gm.pc.transform);
         }
     }
 
@@ -59,7 +59,7 @@ public class LilBaddy : MonoBehaviour
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    currentTarget = Random.Range(0, targetPositions.Length - 1);
+                    currentTarget = Random.Range(0, targetPositions.Count - 1);
                     if (!targetPositions[currentTarget]) i--;
                 }
                 nma.SetDestination(targetPositions[currentTarget].position + Random.insideUnitSphere * 4);

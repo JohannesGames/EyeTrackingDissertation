@@ -13,17 +13,26 @@ public class BigBaddy : MonoBehaviour
     public float startingAltitude = 100;
     public AnimationCurve landingVelocity;
     public ParticleSystem landingVFX;
+    private Baddy baddy;
+    public float spawnFrequency = 4;
+    public float spawnAmount = 5;
+    [HideInInspector]
+    public List<Transform> targetPositions = new List<Transform>();
 
     void Start()
     {
         positionLastFrame = transform.position + Vector3.up;
+        baddy = GetComponent<Baddy>();
         StartCoroutine("Descent");
     }
 
 
     void Update()
     {
-
+        if (baddy.isDestroyed)
+        {
+            StopAllCoroutines();
+        }
     }
 
     private IEnumerator Descent()
@@ -46,5 +55,27 @@ public class BigBaddy : MonoBehaviour
         landingVFX.Play();
         Destroy(landingVFX.gameObject, 3);
         GameManager.gm.pc.BigBaddyLanding();
+        StartCoroutine("SpawnLilBaddies");
+    }
+
+    IEnumerator SpawnLilBaddies()
+    {
+        while (!baddy.isDestroyed)
+        {
+            yield return new WaitForSeconds(spawnFrequency - 2);
+            // Signal spawn coming 2 seconds before
+
+            yield return new WaitForSeconds(2);
+            StartCoroutine("SpawnThem");
+        }
+    }
+
+    IEnumerator SpawnThem()
+    {
+        for (int i = 0; i < spawnAmount; i++)
+        {
+            Instantiate(GameManager.gm.lilBaddyPrefab, lilBaddySpawnPoint.position + Random.insideUnitSphere, Quaternion.identity);
+            yield return null;
+        }
     }
 }
