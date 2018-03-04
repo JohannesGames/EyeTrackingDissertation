@@ -135,8 +135,8 @@ public class ControlPC : MonoBehaviour
     [SerializeField]
     private float fireRateGL;
     [SerializeField]
-    private GameObject ammoPrefabGL;
-    private GameObject ammo;
+    private GrenadeLauncherAmmo ammoPrefabGL;
+    private GrenadeLauncherAmmo ammoGL;
     [SerializeField]
     private float knockbackForceGL = 5;
     [SerializeField]
@@ -458,8 +458,12 @@ public class ControlPC : MonoBehaviour
         if (Time.time >= fireTime)
         {
             fireTime = Time.time + 1 / fireRateGL;
-            Vector3 fireTraj = (Quaternion.AngleAxis(knockbackForceGL, cam.transform.TransformDirection(Vector3.left)) 
+            Vector3 fireTraj = (Quaternion.AngleAxis(5, cam.transform.TransformDirection(Vector3.left)) 
                 * cam.transform.TransformDirection(Vector3.forward)) * fireForceGL;
+
+            ammoGL = Instantiate(ammoPrefabGL, barrel.position, Quaternion.identity);
+            ammoGL.damage = weaponDamageGL;
+            ammoGL.rb.velocity = fireTraj;
         }
     }
 

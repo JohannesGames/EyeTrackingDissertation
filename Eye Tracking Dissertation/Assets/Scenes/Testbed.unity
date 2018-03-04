@@ -2745,7 +2745,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 934338268}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Invisible Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6264,9 +6264,10 @@ MonoBehaviour:
   fireRateSR: 1.5
   weaponDamageGL: 25
   fireRateGL: 1
-  ammoPrefabGL: {fileID: 0}
+  ammoPrefabGL: {fileID: 114472707922070236, guid: 6fc4c9fc106ab43488b0ad91dd810939,
+    type: 2}
   knockbackForceGL: 5
-  fireForceGL: 0
+  fireForceGL: 40
   isEyeTracking: 0
 --- !u!143 &2008140675
 CharacterController:

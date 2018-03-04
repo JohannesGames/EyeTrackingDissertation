@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckPointTrigger : Checkpoint {
+public class CheckPointTrigger : Checkpoint
+{
 
     private void OnTriggerEnter(Collider other)
     {
