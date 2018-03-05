@@ -5,6 +5,13 @@ using UnityEngine.AI;
 
 public class Baddy : MonoBehaviour
 {
+    public enum EnemySizes
+    {
+        lil,
+        big
+    }
+    public EnemySizes enemySize;
+
     [HideInInspector]
     public bool isDestroyed;
     public int health;
@@ -112,7 +119,7 @@ public class Baddy : MonoBehaviour
         NavMeshAgent tempNMA = GetComponent<NavMeshAgent>();
         if (tempNMA) Destroy(tempNMA);
         destroyIn.enabled = true;
-        GameManager.gm.currentCheckpoint.AddToKillCounter();
+        GameManager.gm.currentCheckpoint.AddToKillCounter(enemySize);
     }
 
     void StopVFX()

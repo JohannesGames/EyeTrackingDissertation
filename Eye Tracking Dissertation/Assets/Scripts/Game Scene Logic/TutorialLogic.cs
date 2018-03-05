@@ -26,5 +26,21 @@ public class TutorialLogic : MonoBehaviour
             }
             else isComplete = true;
         }
+        else if (AllComplete())
+        {
+            GameManager.gm.GoToScene(0);
+        }
+    }
+
+    bool AllComplete()
+    {
+        for (int i = 0; i < allCheckpoints.Length; i++)
+        {
+            if (!allCheckpoints[i].isComplete)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

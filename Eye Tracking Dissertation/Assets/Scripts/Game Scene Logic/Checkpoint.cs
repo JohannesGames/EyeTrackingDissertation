@@ -24,17 +24,21 @@ public class Checkpoint : MonoBehaviour
     public BaddiesToSpawn[] baddiesToSpawn;
     public GameObject[] objectsToDelete;
     public GameObject[] objectsToActivate;
+    public HUDMessage[] hudMessageBodies;
 
     // Wave
     public float spawnDelay;
-    int killsRequired = 0;
-    int killCounter = 0;
+    int smallKillCounter = 0;
+    int smallKillsRequired = 0;
+    int bigKillCounter = 0;
+    int bigKillsRequired = 0;
 
     void Update()
     {
         if (checkpiontType == CheckpointTypes.Wave)
         {
-            if (killCounter > 0 && killCounter >= killsRequired)
+            if ((bigKillCounter > 0 || smallKillCounter > 0) && 
+                smallKillCounter >= smallKillsRequired && bigKillCounter >= bigKillsRequired)
             {
                 OnCompletion();
             }
@@ -45,6 +49,16 @@ public class Checkpoint : MonoBehaviour
 
     public void OnBegin()
     {
+        AddHUDMessages();
+        
+        if (objectsToDelete.Length > 0)
+        {
+            foreach (GameObject item in objectsToDelete)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+
         if (checkpiontType == CheckpointTypes.Wave)
         {
             OnBeginWave();
@@ -64,19 +78,32 @@ public class Checkpoint : MonoBehaviour
         }
     }
 
-#endregion
+    #endregion
+
+    void AddHUDMessages()
+    {
+        foreach (HUDMessage item in hudMessageBodies)
+        {
+            if (item.messageBody != null)
+            {
+                GameManager.gm.hudMessagesToBeDisplayed.Add(item);
+                print("Checkpoint: Added item to list to be displayed " + item.messageBody);
+            }
+
+            else
+            {
+                print("Checkpoint: Lost reference to messagebody of HUD!!");
+            }
+        }
+
+        print("Checkpoint: " + name + "+ HudMessages Count: "  + hudMessageBodies.Length);
+
+        GameManager.gm.DisplayNextMessage();
+    }
 
     public virtual void OnCompletion()
     {
         isComplete = true;
-
-        if (objectsToDelete.Length > 0)
-        {
-            foreach (GameObject item in objectsToDelete)
-            {
-                Destroy(item.gameObject);
-            }
-        }
 
         //Destroy(gameObject);
     }
@@ -91,7 +118,14 @@ public class Checkpoint : MonoBehaviour
                 for (int i = 0; i < baddy.amountToSpawn; i++)
                 {
                     var _baddy = Instantiate(baddy.prefabToSpawn, baddy.spawnPoints[Random.Range(0, baddy.spawnPoints.Length - 1)].position + Random.insideUnitSphere, Quaternion.identity);
-                    killsRequired++;
+                    if (_baddy.enemySize == Baddy.EnemySizes.big)
+                    {
+                        bigKillsRequired++;
+                    }
+                    else
+                    {
+                        smallKillsRequired++;
+                    }
                     if (baddy.targets.Length > 0)
                     {
                         LilBaddy lb = _baddy.GetComponent<LilBaddy>();
@@ -116,11 +150,18 @@ public class Checkpoint : MonoBehaviour
         }
     }
 
-    public void AddToKillCounter()
+    public void AddToKillCounter(Baddy.EnemySizes size)
     {
-        killCounter++;
+        if (size == Baddy.EnemySizes.big)
+        {
+            bigKillCounter++;
+        }
+        else
+        {
+            smallKillCounter++;
+        }
     }
-#endregion
+    #endregion
 
     private void OnTriggerEnter(Collider other)
     {

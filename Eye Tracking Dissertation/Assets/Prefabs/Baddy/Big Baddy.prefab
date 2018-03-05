@@ -649,6 +649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a36409792411724eac0d933d38f5dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySize: 1
   isDestroyed: 0
   health: 500
   rb: {fileID: 54499200004914136}

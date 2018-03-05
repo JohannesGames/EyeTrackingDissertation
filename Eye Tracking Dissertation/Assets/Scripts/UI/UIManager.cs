@@ -5,12 +5,16 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
 
+    public ControlPC pc;
     // UI Elements
     [Header("UI Elements")]
     public RectTransform HUDCentre;
     private Vector2 hudCentreSize;
     private Vector2 currentCentreSize;
     public Image[] centrePieces;
+    public RectTransform hudMessagePanel;
+    public Text hudMessageBody;
+    public Button hudMessageConfirm;
 
     // UI Animation
     [Header("Animation")]
@@ -23,9 +27,9 @@ public class UIManager : MonoBehaviour
     public float animTimeHUDCentre = .5f;
     [HideInInspector]
     public bool isHUDActive;
-
     [HideInInspector]
-    public ControlPC pc;
+    public bool hudMessage;
+    
 
 
     void Start()
@@ -33,11 +37,12 @@ public class UIManager : MonoBehaviour
         hudCentreSize = HUDCentre.sizeDelta;
         currentCentreSize = HUDCentre.sizeDelta *= 1.2f;
         HUDCentre.gameObject.SetActive(false);
+        hudMessageConfirm.onClick.AddListener(CloseHUDMessage);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (!hudMessage && Input.GetKeyDown(KeyCode.LeftAlt))
         {
             if (isHUDActive)
             {
@@ -113,5 +118,31 @@ public class UIManager : MonoBehaviour
         }
         isHUDActive = false;
         HUDCentre.gameObject.SetActive(false);
+    }
+
+    public void OpenHUDMessage(string messBody)
+    {
+        GameManager.gm.pc.StoppedFiring();
+        hudMessagePanel.gameObject.SetActive(true);
+        hudMessageBody.text = messBody;
+        hudMessage = true;
+
+#if UNITY_EDITOR
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+#else
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+#endif
+    }
+
+    public void CloseHUDMessage()
+    {
+        hudMessage = false;
+        hudMessagePanel.gameObject.SetActive(false);
+        GameManager.gm.DisplayNextMessage();
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

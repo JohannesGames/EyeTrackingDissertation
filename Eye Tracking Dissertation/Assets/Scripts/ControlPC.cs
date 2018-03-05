@@ -73,8 +73,7 @@ public class ControlPC : MonoBehaviour
 
     // UI
     [Header("UI")]
-    public UIManager UIManagerPrefab;
-    private UIManager uiManager;
+    public UIManager uiManager;
 
     // Stats
     public int health = 100;
@@ -160,8 +159,6 @@ public class ControlPC : MonoBehaviour
         wasStopped = true;
         appliedGravity = gravity / 2;
         gunAnim.speed = .5f;
-        uiManager = Instantiate(UIManagerPrefab);
-        uiManager.pc = this;
         GameManager.gm.pc = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -193,47 +190,50 @@ public class ControlPC : MonoBehaviour
 
     void GetPlayerInput()
     {
-        // Keyboard input
-        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        moveDirection.Normalize();
-        moveDirection = transform.TransformDirection(moveDirection);
-        if (Mathf.Abs(moveDirection.x) != 0 || Mathf.Abs(moveDirection.z) != 0)
+        if (!uiManager.hudMessage)
         {
-            if (Mathf.Abs(moveDirection.x) == 1 || Mathf.Abs(moveDirection.z) == 1)
+            // Keyboard input
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            moveDirection.Normalize();
+            moveDirection = transform.TransformDirection(moveDirection);
+            if (Mathf.Abs(moveDirection.x) != 0 || Mathf.Abs(moveDirection.z) != 0)
             {
-                wasStopped = false;
-            }
-        }
-
-        // Aerial
-        if (isGrounded && !isJumping && Input.GetButtonDown("Jump"))
-        {
-            isJumping = true;
-        }
-
-
-        // Mouse input
-        if (isEyeTracking || (!isEyeTracking && !uiManager.isHUDActive))
-        {
-            yRotation += Input.GetAxis("Mouse X") * yRotationSpeed * Time.deltaTime;
-            xRotation -= Input.GetAxis("Mouse Y") * xRotationSpeed * Time.deltaTime;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-            if (xRotation != cam.transform.eulerAngles.x || yRotation != transform.eulerAngles.y)
-            {
-                cam.transform.localEulerAngles = new Vector3(xRotation, 0, 0);
-                transform.localEulerAngles = new Vector3(0, yRotation, 0);
-            }
-
-            if (!isSwitching)   // can only fire if not switching weapons
-            {
-                if (Time.time > fireTime && Input.GetButton("Fire1"))
+                if (Mathf.Abs(moveDirection.x) == 1 || Mathf.Abs(moveDirection.z) == 1)
                 {
-                    WeaponFire();
+                    wasStopped = false;
                 }
-                else if (Input.GetButtonUp("Fire1"))    // if player lets go of fire button
+            }
+
+            // Aerial
+            if (isGrounded && !isJumping && Input.GetButtonDown("Jump"))
+            {
+                isJumping = true;
+            }
+
+
+            // Mouse input
+            if (isEyeTracking || (!isEyeTracking && !uiManager.isHUDActive))
+            {
+                yRotation += Input.GetAxis("Mouse X") * yRotationSpeed * Time.deltaTime;
+                xRotation -= Input.GetAxis("Mouse Y") * xRotationSpeed * Time.deltaTime;
+                xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+                if (xRotation != cam.transform.eulerAngles.x || yRotation != transform.eulerAngles.y)
                 {
-                    StoppedFiring();
+                    cam.transform.localEulerAngles = new Vector3(xRotation, 0, 0);
+                    transform.localEulerAngles = new Vector3(0, yRotation, 0);
+                }
+
+                if (!isSwitching)   // can only fire if not switching weapons
+                {
+                    if (Time.time > fireTime && Input.GetButton("Fire1"))
+                    {
+                        WeaponFire();
+                    }
+                    else if (Input.GetButtonUp("Fire1"))    // if player lets go of fire button
+                    {
+                        StoppedFiring();
+                    }
                 }
             }
         }

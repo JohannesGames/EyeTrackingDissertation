@@ -55,6 +55,7 @@ public class BigBaddy : MonoBehaviour
         landingVFX.Play();
         Destroy(landingVFX.gameObject, 3);
         GameManager.gm.pc.BigBaddyLanding();
+        StartCoroutine("SpawnThem");
         StartCoroutine("SpawnLilBaddies");
     }
 
