@@ -27,6 +27,11 @@ public class GameManager : MonoBehaviour
 
     // Game logic
     public Checkpoint currentCheckpoint;
+    public LayerMask terrainLayer;
+    public LayerMask baddyLayer;
+    public LayerMask baddyBodyLayer;
+    public LayerMask baddyCriticalLayer;
+    public LayerMask playerLayer;
 
     // Baddies
     [Header("Baddies")]

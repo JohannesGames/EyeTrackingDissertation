@@ -12,6 +12,7 @@ public class SmokeTrail : MonoBehaviour
     private float fadeProgress;
     [HideInInspector]
     public Transform gunBarrel;
+    public bool isFollowing;
 
     void Start()
     {
@@ -26,6 +27,10 @@ public class SmokeTrail : MonoBehaviour
     {
         fadeTimer += Time.deltaTime;
         lr.material.color = Color.Lerp(startColour, endColour, fadeTimer / fadeLength);
-        lr.SetPosition(1, gunBarrel.position);
+
+        if (isFollowing)
+        {
+            lr.SetPosition(1, gunBarrel.position);
+        }
     }
 }

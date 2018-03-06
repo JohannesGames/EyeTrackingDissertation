@@ -21,6 +21,10 @@ public class LilBaddy : MonoBehaviour
     private bool isAttacking;
     [HideInInspector]
     public bool isHuntingPC;
+    public int damage = 15;
+    public float attackCooldown = 3;
+    private float nextAttackTime;
+    public LineRenderer electricAttack;
 
 
     void Start()
@@ -28,6 +32,21 @@ public class LilBaddy : MonoBehaviour
         nma = GetComponent<NavMeshAgent>();
         cc = GetComponent<CharacterController>();
         baddy = GetComponent<Baddy>();
+        Invoke("FindPC", 0);
+        InvokeRepeating("Orientation", 0, .5f);
+    }
+
+    void Orientation()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1, GameManager.gm.terrainLayer))
+        {
+            transform.up = hit.normal;
+        }
+    }
+
+    void FindPC()
+    {
         if (targetPositions.Count == 0)
         {
             targetPositions.Add(GameManager.gm.pc.transform);
@@ -47,6 +66,12 @@ public class LilBaddy : MonoBehaviour
             {
                 MoveToPC();
             }
+        }
+
+        if (isAttacking && Time.time > nextAttackTime)
+        {
+            nextAttackTime = Time.time + attackCooldown;
+            AttackPC();
         }
     }
 
@@ -74,14 +99,31 @@ public class LilBaddy : MonoBehaviour
 
     void AttackPC()
     {
+        electricAttack.gameObject.SetActive(true);
+        electricAttack.SetPosition(0, transform.position);
+        electricAttack.SetPosition(1, GameManager.gm.pc.transform.position);
+        GameManager.gm.pc.TakeDamage(damage);
+        Invoke("HideElectric", .15f);
+    }
 
+    void HideElectric()
+    {
+        electricAttack.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == 12)   // is it the PC?
         {
-            AttackPC();
+            isAttacking = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == 12)   // is it the PC?
+        {
+            isAttacking = false;
         }
     }
 }

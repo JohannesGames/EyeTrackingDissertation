@@ -87,7 +87,6 @@ public class Checkpoint : MonoBehaviour
             if (item.messageBody != null)
             {
                 GameManager.gm.hudMessagesToBeDisplayed.Add(item);
-                print("Checkpoint: Added item to list to be displayed " + item.messageBody);
             }
 
             else
@@ -96,12 +95,10 @@ public class Checkpoint : MonoBehaviour
             }
         }
 
-        print("Checkpoint: " + name + "+ HudMessages Count: "  + hudMessageBodies.Length);
-
         GameManager.gm.DisplayNextMessage();
     }
 
-    public virtual void OnCompletion()
+    public void OnCompletion()
     {
         isComplete = true;
 

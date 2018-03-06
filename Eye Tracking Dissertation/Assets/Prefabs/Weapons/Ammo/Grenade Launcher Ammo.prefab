@@ -175,7 +175,7 @@ MonoBehaviour:
   damage: 20
   rb: {fileID: 54670114672944724}
   explodeAfter: 2
-  explosionRange: 1
+  explosionRange: 3
   explosionForce: 0
   explosionVFX: {fileID: 198017907150340740, guid: fa7db13de5c352045a35ad5ccb96e641,
     type: 2}
@@ -207,7 +207,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.15
+  m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &198963480831035630
 ParticleSystem:

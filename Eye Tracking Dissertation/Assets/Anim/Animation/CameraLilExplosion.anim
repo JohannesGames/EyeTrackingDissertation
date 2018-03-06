@@ -26,14 +26,14 @@ AnimationClip:
       - serializedVersion: 2
         time: 0.083333336
         value: {x: 0, y: -0.075, z: 0}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 0, y: 0, z: 0}
+        inSlope: {x: 0, y: -0.90000004, z: 0}
+        outSlope: {x: 0, y: 1.2857144, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.2
         value: {x: 0, y: 0.075, z: 0}
-        inSlope: {x: 0, y: 0, z: 0}
-        outSlope: {x: 0, y: 0, z: 0}
+        inSlope: {x: 0, y: 1.2857144, z: 0}
+        outSlope: {x: 0, y: -0.5625, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.33333334
@@ -130,15 +130,15 @@ AnimationClip:
       - serializedVersion: 2
         time: 0.083333336
         value: -0.075
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
+        inSlope: -0.90000004
+        outSlope: 1.2857144
+        tangentMode: 69
       - serializedVersion: 2
         time: 0.2
         value: 0.075
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
+        inSlope: 1.2857144
+        outSlope: -0.5625
+        tangentMode: 69
       - serializedVersion: 2
         time: 0.33333334
         value: 0
@@ -160,7 +160,7 @@ AnimationClip:
         value: 0
         inSlope: 0
         outSlope: 0
-        tangentMode: 136
+        tangentMode: 69
       - serializedVersion: 2
         time: 0.083333336
         value: 0

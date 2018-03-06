@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.PostProcessing;
 
 public class MovementMod
 {
@@ -74,9 +75,15 @@ public class ControlPC : MonoBehaviour
     // UI
     [Header("UI")]
     public UIManager uiManager;
+    private PostProcessingProfile postProf;
 
     // Stats
     public int health = 100;
+    public int shields = 100;
+    public float shieldCooldownLength = 3;  // time without damage taken before shield recharges
+    private float timeSinceDamageTaken = 0;
+    public float shieldRechargeLength = 2;
+    private float shieldRechargeTimer = 0;
 
     ///
     ////////// Weapons 
@@ -125,6 +132,8 @@ public class ControlPC : MonoBehaviour
     private int weaponDamageSR;
     [SerializeField]
     private float fireRateSR;
+    [SerializeField]
+    private SmokeTrail smokeTrailPrefabSR;
 
     // Grenade Launcher
     [Space(10)]
@@ -159,6 +168,9 @@ public class ControlPC : MonoBehaviour
         wasStopped = true;
         appliedGravity = gravity / 2;
         gunAnim.speed = .5f;
+        postProf = cam.GetComponent<PostProcessingBehaviour>().profile;
+        var vigSetts = postProf.vignette.settings;
+        vigSetts.intensity = 0;
         GameManager.gm.pc = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -173,6 +185,13 @@ public class ControlPC : MonoBehaviour
         if (isFiring)
         {
             fireDuration += Time.deltaTime;
+        }
+
+        timeSinceDamageTaken += Time.deltaTime;
+
+        if (shields < 100 && timeSinceDamageTaken > shieldCooldownLength)
+        {
+            StartCoroutine("ShieldRegen");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))   //show cursor in editor
@@ -395,11 +414,11 @@ public class ControlPC : MonoBehaviour
     void WeaponFireAR()
     {
         isFiring = true;
-        gunAnim.speed = camAnim.speed = fireRateAR;
         gunAnim.SetBool("isFiringAR", isFiring);
         camAnim.SetBool("isFiringAR", isFiring);
         if (Time.time >= fireTime)
         {
+            gunAnim.speed = camAnim.speed = fireRateAR;
             fireTime = Time.time + 1 / fireRateAR;
 
             Vector3 fireDirection = cam.transform.TransformDirection(Vector3.forward);
@@ -449,19 +468,70 @@ public class ControlPC : MonoBehaviour
 
     void WeaponFireSR()
     {
+        isFiring = true;
+        gunAnim.SetBool("isFiringSR", isFiring);
+        camAnim.SetBool("isFiringSR", isFiring);
+        if (Time.time >= fireTime)
+        {
+            gunAnim.speed = camAnim.speed = fireRateSR;
+            fireTime = Time.time + 1 / fireRateSR;
 
+            Vector3 fireDirection = cam.transform.TransformDirection(Vector3.forward);
+            RaycastHit hit;
+
+            if (Physics.SphereCast(cam.transform.position + cam.transform.TransformDirection(Vector3.forward) / 2, .1f,
+                fireDirection, out hit, 500, GameManager.gm.baddyCriticalLayer))    // is it a critical shot?
+            {
+                var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
+                trail.gunBarrel = barrel;
+                if (hit.collider.gameObject.layer == 10)    // critical shot
+                {
+                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR * 2);
+                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
+                    //part.transform.forward = hit.normal;
+                }
+                else
+                {
+                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR);
+                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
+                    //part.transform.forward = hit.normal;
+                }
+                return;
+            }
+            if (Physics.Raycast(cam.transform.position + cam.transform.TransformDirection(Vector3.forward) / 2, fireDirection, out hit, 500, weaponLayermask))
+            {
+                var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
+                trail.gunBarrel = barrel;
+
+                if (hit.collider.gameObject.layer == 8)
+                {
+                    // terrain
+                }
+                else
+                {
+                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR);
+                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
+                    //part.transform.forward = hit.normal;
+                }
+            }
+            else
+            {
+                var trail = Instantiate(smokeTrailPrefabSR, barrel.position + cam.transform.TransformDirection(Vector3.forward) * 20, Quaternion.identity);
+                trail.gunBarrel = barrel;
+            }
+        }
     }
 
     void WeaponFireGL()
     {
         isFiring = true;
-        gunAnim.speed = camAnim.speed = fireRateGL;
         gunAnim.SetBool("isFiringGL", isFiring);
         camAnim.SetBool("isFiringGL", isFiring);
         if (Time.time >= fireTime)
         {
+            gunAnim.speed = camAnim.speed = fireRateGL;
             fireTime = Time.time + 1 / fireRateGL;
-            Vector3 fireTraj = (Quaternion.AngleAxis(5, cam.transform.TransformDirection(Vector3.left)) 
+            Vector3 fireTraj = (Quaternion.AngleAxis(5, cam.transform.TransformDirection(Vector3.left))
                 * cam.transform.TransformDirection(Vector3.forward)) * fireForceGL;
 
             ammoGL = Instantiate(ammoPrefabGL, barrel.position, Quaternion.identity);
@@ -476,9 +546,11 @@ public class ControlPC : MonoBehaviour
         isFiring = false;
         gunAnim.SetBool("isFiringAR", isFiring);
         gunAnim.SetBool("isFiringGL", isFiring);
+        gunAnim.SetBool("isFiringSR", isFiring);
         gunAnim.speed = 1;
         camAnim.SetBool("isFiringAR", isFiring);
         camAnim.SetBool("isFiringGL", isFiring);
+        camAnim.SetBool("isFiringSR", isFiring);
         fireDuration = 0;
     }
 
@@ -502,15 +574,78 @@ public class ControlPC : MonoBehaviour
 
     public void BigBaddyLanding()
     {
+        camAnim.speed = 1;
         camAnim.SetTrigger("bigBaddyLanding");
+    }
+
+    public void TakeDamage(int damage)
+    {
+        StopCoroutine("ShieldRegen");
+        timeSinceDamageTaken = 0;
+        if (shields > 0)
+        {
+            shields -= damage;
+        }
+        else
+        {
+            health -= damage;
+        }
+
+        CheckHealth();
+    }
+
+    public void Heal(int heals)
+    {
+        if (health < 100)
+        {
+            health += heals;
+        }
+
+        Mathf.Clamp(health, 0, 100);
     }
 
     void CheckHealth()
     {
-        if (health <= 0)
+        if (shields > 0)
         {
-            // Respawn
+            uiManager.shields.value = shields;
         }
-        // Update UI
+        else
+        {
+            if (health <= 0)
+            {
+#if UNITY_EDITOR
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+#else
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+#endif
+                GameManager.gm.GoToScene(0);
+            }
+            else
+            {
+                uiManager.health.value = health;
+                var vigSetts = postProf.vignette.settings;
+                vigSetts.intensity = Mathf.Lerp(0, .3f, (1 - health / 100));
+            }
+        }
+        Mathf.Clamp(shields, 0, 100);
+        Mathf.Clamp(health, 0, 100);
+    }
+
+    IEnumerator ShieldRegen()
+    {
+        shieldRechargeTimer = 0;
+        int shieldValue = shields;
+        float progress = 0;
+        while (shieldRechargeTimer < shieldRechargeLength)
+        {
+            shieldRechargeTimer += Time.deltaTime;
+            progress = shieldRechargeTimer / shieldRechargeLength;
+            uiManager.shields.value = Mathf.Lerp(shieldValue, 100, shieldRechargeTimer / shieldRechargeLength);
+            shields = (int)uiManager.shields.value;
+            yield return null;
+        }
     }
 }

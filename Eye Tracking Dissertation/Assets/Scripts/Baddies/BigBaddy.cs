@@ -19,11 +19,28 @@ public class BigBaddy : MonoBehaviour
     [HideInInspector]
     public List<Transform> targetPositions = new List<Transform>();
 
+    // Combat
+    private bool isCharging;
+    public int damage = 45;
+    private float distancePC;
+    private float checkTimePC;
+    public float attackCooldown = 3;
+    private float nextAttackTime;
+    public float chargeLength;   // how long must the PC be in view before bigBaddy fires
+    private float chargeTimer;
+    public LineRenderer attackBeam;
+    public ParticleSystem weaponCharger;
+    public ParticleSystem weaponChargerChild;
+
     void Start()
     {
         positionLastFrame = transform.position + Vector3.up;
         baddy = GetComponent<Baddy>();
         StartCoroutine("Descent");
+        checkTimePC = Time.time + .5f;
+        weaponChargerChild = weaponCharger.GetComponentInChildren<ParticleSystem>();
+        nextAttackTime = Time.time + timeToLand + 1;
+        attackBeam.SetPosition(0, attackBeam.transform.position);
     }
 
 
@@ -32,6 +49,35 @@ public class BigBaddy : MonoBehaviour
         if (baddy.isDestroyed)
         {
             StopAllCoroutines();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (Time.time > nextAttackTime && Time.time >= checkTimePC)
+        {
+            checkTimePC = isCharging ? 0 : Time.time + .5f;
+            distancePC = Vector3.Distance(GameManager.gm.pc.transform.position, transform.position);
+            if (!Physics.Linecast(baddy.criticalPoint.transform.position, GameManager.gm.pc.transform.position, GameManager.gm.terrainLayer))
+            {
+                // if no terrain between baddy and PC charge up weapon
+                if (!isCharging)
+                {
+                    weaponChargerChild.Play();
+                    var emission = weaponCharger.emission;
+                    emission.rateOverTime = 40;
+                    StartCoroutine("ChargeWeapon");
+                }
+            }
+            else if (isCharging)
+            {
+                isCharging = false;
+                weaponChargerChild.Stop();
+                var emission = weaponCharger.emission;
+                emission.rateOverTime = 0;
+                attackBeam.gameObject.SetActive(false);
+                StopCoroutine("ChargeWeapon");
+            }
         }
     }
 
@@ -55,6 +101,7 @@ public class BigBaddy : MonoBehaviour
         landingVFX.Play();
         Destroy(landingVFX.gameObject, 3);
         GameManager.gm.pc.BigBaddyLanding();
+        nextAttackTime = Time.time + 1;
         StartCoroutine("SpawnThem");
         StartCoroutine("SpawnLilBaddies");
     }
@@ -78,5 +125,37 @@ public class BigBaddy : MonoBehaviour
             Instantiate(GameManager.gm.lilBaddyPrefab, lilBaddySpawnPoint.position + Random.insideUnitSphere, Quaternion.identity);
             yield return null;
         }
+    }
+
+    IEnumerator ChargeWeapon()
+    {
+        isCharging = true;
+        chargeTimer = 0;
+        float progress = 0;
+        var main = weaponCharger.main;
+        attackBeam.gameObject.SetActive(true);
+        while (chargeTimer < chargeLength)
+        {
+            progress = chargeTimer / chargeLength;
+            main.startSize = Mathf.Lerp(0, 12, progress);
+            chargeTimer += Time.deltaTime;
+            UpdateAttackBeam(progress);
+
+            yield return null;
+        }
+
+        attackBeam.gameObject.SetActive(false);
+        isCharging = false;
+        weaponChargerChild.Stop();
+        var emission = weaponCharger.emission;
+        emission.rateOverTime = 0;
+        nextAttackTime = Time.time + attackCooldown;
+    }
+
+    void UpdateAttackBeam(float progress)
+    {
+        attackBeam.startWidth = attackBeam.endWidth = Mathf.Lerp(.001f, .2f, progress);
+        attackBeam.SetPosition(0, baddy.criticalPoint.transform.position);
+        attackBeam.SetPosition(1, GameManager.gm.pc.transform.position);
     }
 }

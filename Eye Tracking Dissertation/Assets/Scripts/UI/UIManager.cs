@@ -8,6 +8,8 @@ public class UIManager : MonoBehaviour
     public ControlPC pc;
     // UI Elements
     [Header("UI Elements")]
+    public Slider health;
+    public Slider shields;
     public RectTransform HUDCentre;
     private Vector2 hudCentreSize;
     private Vector2 currentCentreSize;
@@ -29,7 +31,7 @@ public class UIManager : MonoBehaviour
     public bool isHUDActive;
     [HideInInspector]
     public bool hudMessage;
-    
+
 
 
     void Start()
@@ -140,9 +142,14 @@ public class UIManager : MonoBehaviour
     {
         hudMessage = false;
         hudMessagePanel.gameObject.SetActive(false);
-        GameManager.gm.DisplayNextMessage();
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (GameManager.gm.hudMessagesToBeDisplayed.Count > 0)
+        {
+            GameManager.gm.DisplayNextMessage();
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 }

@@ -28,6 +28,13 @@ public class TutorialLogic : MonoBehaviour
         }
         else if (AllComplete())
         {
+#if UNITY_EDITOR
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+#else
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+#endif
             GameManager.gm.GoToScene(0);
         }
     }
