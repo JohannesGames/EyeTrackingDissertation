@@ -141,9 +141,12 @@ public class ControlPC : MonoBehaviour
     [SerializeField]
     private float fireRateSR;
     [SerializeField]
+    private float unscopedSpreadSR = 10;
+    [SerializeField]
     private SmokeTrail smokeTrailPrefabSR;
     [SerializeField]
     private AudioSource[] sniperRifleSFX;
+    private bool isScoped;
 
     // Grenade Launcher
     [Space(10)]
@@ -521,35 +524,23 @@ public class ControlPC : MonoBehaviour
             fireTime = Time.time + 1 / fireRateSR;
 
             Vector3 fireDirection = cam.transform.TransformDirection(Vector3.forward);
+            if (!isScoped)
+            {
+                fireDirection = Quaternion.AngleAxis(Random.Range(-unscopedSpreadSR, unscopedSpreadSR), cam.transform.TransformDirection(Vector3.up)) * fireDirection;
+                fireDirection = Quaternion.AngleAxis(Random.Range(-unscopedSpreadSR, unscopedSpreadSR), cam.transform.TransformDirection(Vector3.left)) * fireDirection;
+            }
             RaycastHit hit;
 
-            if (Physics.SphereCast(cam.transform.position, .1f,
-                fireDirection, out hit, 500, GameManager.gm.baddyCriticalLayer))    // is it a critical shot?
-            {
-                var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
-                trail.gunBarrel = barrel;
-                if (hit.collider.gameObject.layer == 10)    // critical shot
-                {
-                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR * 2);
-                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
-                    //part.transform.forward = hit.normal;
-                }
-                else
-                {
-                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR);
-                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
-                    //part.transform.forward = hit.normal;
-                }
-                return;
-            }
             if (Physics.Raycast(cam.transform.position, fireDirection, out hit, 500, weaponLayermask))
             {
                 var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
                 trail.gunBarrel = barrel;
 
-                if (hit.collider.gameObject.layer == 8)
+                if (hit.collider.gameObject.layer == 10)    // critical shot
                 {
-                    // terrain
+                    hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR * 2);
+                    //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
+                    //part.transform.forward = hit.normal;
                 }
                 else
                 {
@@ -569,6 +560,7 @@ public class ControlPC : MonoBehaviour
     void EnterSniperFOV()
     {
         cam.fieldOfView = 20;
+        isScoped = true;
         uiManager.sniperReticle.gameObject.SetActive(true);
         appliedXRotationSpeed = xRotationSpeed / 2;
         appliedYRotationSpeed = yRotationSpeed / 2;
@@ -577,6 +569,7 @@ public class ControlPC : MonoBehaviour
     public void LeaveSniperFOV()
     {
         cam.fieldOfView = 75;
+        isScoped = false;
         uiManager.sniperReticle.gameObject.SetActive(false);
         appliedXRotationSpeed = xRotationSpeed;
         appliedYRotationSpeed = yRotationSpeed;

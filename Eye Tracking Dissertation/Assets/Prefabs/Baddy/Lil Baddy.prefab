@@ -470,7 +470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemySize: 0
   isDestroyed: 0
-  health: 20
+  health: 25
   rb: {fileID: 54484333221166458}
   criticalPoint: {fileID: 54636488366780260}
   baddyBody: {fileID: 136336143239012872}
