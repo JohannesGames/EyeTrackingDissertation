@@ -20,6 +20,7 @@ public class BigBaddy : MonoBehaviour
     public List<Transform> targetPositions = new List<Transform>();
 
     // Combat
+    private List<LilBaddy> spawnedLilGuys = new List<LilBaddy>();
     private bool isCharging;
     public int damage = 45;
     private float distancePC;
@@ -124,7 +125,8 @@ public class BigBaddy : MonoBehaviour
     {
         for (int i = 0; i < spawnAmount; i++)
         {
-            Instantiate(GameManager.gm.lilBaddyPrefab, lilBaddySpawnPoint.position + Random.insideUnitSphere, Quaternion.identity);
+            var lilGuy = Instantiate(GameManager.gm.lilBaddyPrefab, lilBaddySpawnPoint.position + Random.insideUnitSphere, Quaternion.identity);
+            spawnedLilGuys.Add(lilGuy);
             yield return null;
         }
     }
@@ -170,5 +172,16 @@ public class BigBaddy : MonoBehaviour
         attackBeam.startWidth = attackBeam.endWidth = Mathf.Lerp(.001f, .1f, progress);
         attackBeam.SetPosition(0, baddy.criticalPoint.transform.position);
         attackBeam.SetPosition(1, GameManager.gm.pc.transform.position + Random.insideUnitSphere * .5f * progress);
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < spawnedLilGuys.Count; i++)
+        {
+            if (spawnedLilGuys[i])
+            {
+                spawnedLilGuys[i].baddy.Explode();
+            }
+        }
     }
 }

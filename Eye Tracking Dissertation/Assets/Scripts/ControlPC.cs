@@ -474,13 +474,13 @@ public class ControlPC : MonoBehaviour
 
                     if (hit.collider.gameObject.layer == 10)    // critical shot
                     {
-                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR : weaponDamageAR * 2);
+                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR / 2 : weaponDamageAR * 2);
                         //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
                         //part.transform.forward = hit.normal;
                     }
                     else
                     {
-                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR / 2 : weaponDamageAR);
+                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR / 4 : weaponDamageAR);
                         //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
                         //part.transform.forward = hit.normal;
                     }
@@ -665,6 +665,7 @@ public class ControlPC : MonoBehaviour
         {
             health += heals;
             Mathf.Clamp(health, 0, 100);
+            uiManager.health.value = health;
             return true;
         }
         return false;

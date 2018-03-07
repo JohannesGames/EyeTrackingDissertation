@@ -7,7 +7,8 @@ public class LilBaddy : MonoBehaviour
 {
     NavMeshAgent nma;
     CharacterController cc;
-    Baddy baddy;
+    [HideInInspector]
+    public Baddy baddy;
 
     public float gravity = 5;
     public float checkForNewTargetAfter = 1.5f;
@@ -52,13 +53,13 @@ public class LilBaddy : MonoBehaviour
             {
                 cc.Move(Vector3.down * gravity * Time.deltaTime);
             }
-            else if (nma.isOnNavMesh)
+            else if (nma && nma.isOnNavMesh)
             {
                 MoveToPC();
             }
         }
 
-        if (isAttacking && Time.time > nextAttackTime)
+        if (!baddy.isDestroyed && isAttacking && Time.time > nextAttackTime)
         {
             nextAttackTime = Time.time + attackCooldown;
             AttackPC();

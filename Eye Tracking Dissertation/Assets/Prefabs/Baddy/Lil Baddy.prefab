@@ -432,7 +432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e404fdd94d6a8344898efd5a576c3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyIn: 4
+  destroyIn: 1.5
 --- !u!114 &114214189988517884
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemySize: 0
   isDestroyed: 0
-  health: 30
+  health: 20
   rb: {fileID: 54484333221166458}
   criticalPoint: {fileID: 54636488366780260}
   baddyBody: {fileID: 136336143239012872}
@@ -500,6 +500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f839e7b79e8b24faf6269a5029fe55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baddy: {fileID: 0}
   gravity: 5
   checkForNewTargetAfter: 1.5
   targetPositions: []

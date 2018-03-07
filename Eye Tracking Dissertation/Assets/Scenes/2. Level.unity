@@ -6023,6 +6023,16 @@ Prefab:
       propertyPath: uiManager
       value: 
       objectReference: {fileID: 2135350827}
+    - target: {fileID: 114558718576992130, guid: 7a6e7b5162c9e394aae8a92f01b2d6f5,
+        type: 2}
+      propertyPath: weaponDamageAR
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114558718576992130, guid: 7a6e7b5162c9e394aae8a92f01b2d6f5,
+        type: 2}
+      propertyPath: spreadDegreeAR
+      value: 1.75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a6e7b5162c9e394aae8a92f01b2d6f5, type: 2}
   m_IsPrefabParent: 0
@@ -16468,12 +16478,12 @@ Prefab:
     - target: {fileID: 224207275224316972, guid: 91b2f12bcdf0bd84b966615be7020dbb,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 110.53
       objectReference: {fileID: 0}
     - target: {fileID: 224207275224316972, guid: 91b2f12bcdf0bd84b966615be7020dbb,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 200
+      value: 110.53
       objectReference: {fileID: 0}
     - target: {fileID: 224342064428235508, guid: 91b2f12bcdf0bd84b966615be7020dbb,
         type: 2}

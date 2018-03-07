@@ -34,11 +34,7 @@ public class GrenadeLauncherAmmo : MonoBehaviour
     {
         if (!hasExploded)
         {
-            BaddyHitbox _bad = collision.GetComponent<BaddyHitbox>();
-            if (_bad)
-            {
-                Explode();
-            }
+            Explode();
         }
     }
 

@@ -174,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 20
   rb: {fileID: 54670114672944724}
-  explodeAfter: 2
+  explodeAfter: 0.5
   explosionRange: 3
   explosionForce: 0
   explosionVFX: {fileID: 198017907150340740, guid: fa7db13de5c352045a35ad5ccb96e641,

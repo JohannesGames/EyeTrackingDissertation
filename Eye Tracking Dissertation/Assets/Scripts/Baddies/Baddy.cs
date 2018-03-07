@@ -64,7 +64,6 @@ public class Baddy : MonoBehaviour
     {
         if (health <= 0 && !isDestroyed)
         {
-            isDestroyed = true;
             Explode();
         }
         else
@@ -98,20 +97,20 @@ public class Baddy : MonoBehaviour
         }
     }
 
-    private void Explode()
+    public void Explode()
     {
+        isDestroyed = true;
         Instantiate(deathExplosionVFX, transform.position, Quaternion.identity);
         Invoke("StopVFX", 1);
-        GameManager.gm.pc.camAnim.SetTrigger(destructionAnimationName);
-        GameManager.gm.pc.camAnim.speed = 1;
-        //criticalPoint.GetComponent<SphereCollider>().enabled = false;
-        //baddyBody.enabled = false;
-        //baddyBase.enabled = false;
-        criticalPoint.transform.parent = null;
-        criticalPoint.GetComponent<DestroyIn>().enabled = true;
-        criticalPoint.isKinematic = false;
-        criticalPoint.AddForce(Vector3.up * 200 + (Vector3.left / Random.Range(1, 50)) + (Vector3.forward / Random.Range(1, 50)), ForceMode.VelocityChange);
-        criticalPoint.transform.parent = null;
+        //GameManager.gm.pc.camAnim.SetTrigger(destructionAnimationName);
+        //GameManager.gm.pc.camAnim.speed = 1;
+        if (criticalPoint)
+        {
+            criticalPoint.transform.parent = null;
+            criticalPoint.GetComponent<DestroyIn>().enabled = true;
+            criticalPoint.isKinematic = false;
+            criticalPoint.AddForce(Vector3.up * 200 + (Vector3.left / Random.Range(1, 50)) + (Vector3.forward / Random.Range(1, 50)), ForceMode.VelocityChange);
+        }
         var rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.AddForce(Vector3.up * 10, ForceMode.VelocityChange);
