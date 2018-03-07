@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     private Vector2 hudCentreSize;
     private Vector2 currentCentreSize;
     public Image[] centrePieces;
+    public RectTransform sniperReticle;
     public RectTransform hudMessagePanel;
     public Text hudMessageBody;
     public Button hudMessageConfirm;
@@ -125,6 +126,7 @@ public class UIManager : MonoBehaviour
     public void OpenHUDMessage(string messBody)
     {
         GameManager.gm.pc.StoppedFiring();
+        GameManager.gm.pc.LeaveSniperFOV();
         hudMessagePanel.gameObject.SetActive(true);
         hudMessageBody.text = messBody;
         hudMessage = true;

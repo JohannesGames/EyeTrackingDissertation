@@ -68,7 +68,9 @@ public class ControlPC : MonoBehaviour
     [HideInInspector]
     public Camera cam;
     public float yRotationSpeed = 45;
+    public float appliedYRotationSpeed = 45;
     public float xRotationSpeed = 45;
+    public float appliedXRotationSpeed = 45;
     private float yRotation;
     private float xRotation;
 
@@ -78,6 +80,8 @@ public class ControlPC : MonoBehaviour
     private PostProcessingProfile postProf;
 
     // Stats
+    [Header("Stats")]
+    public bool isInvincible;
     public int health = 100;
     public int shields = 100;
     public float shieldCooldownLength = 3;  // time without damage taken before shield recharges
@@ -124,6 +128,10 @@ public class ControlPC : MonoBehaviour
     private SmokeTrail smokeTrailPrefabAR;
     [SerializeField]
     private ParticleSystem onHitParticleAR;
+    [SerializeField]
+    private float maxEffectiveRange = 7.5f;
+    [SerializeField]
+    private AudioSource[] assaultRifleSFX;
 
     // Sniper
     [Space(10)]
@@ -134,6 +142,8 @@ public class ControlPC : MonoBehaviour
     private float fireRateSR;
     [SerializeField]
     private SmokeTrail smokeTrailPrefabSR;
+    [SerializeField]
+    private AudioSource[] sniperRifleSFX;
 
     // Grenade Launcher
     [Space(10)]
@@ -149,6 +159,8 @@ public class ControlPC : MonoBehaviour
     private float knockbackForceGL = 5;
     [SerializeField]
     private float fireForceGL;
+    [SerializeField]
+    private AudioSource[] grenadeLauncherSFX;
 
     //////////
     ///
@@ -162,9 +174,12 @@ public class ControlPC : MonoBehaviour
         cc = GetComponent<CharacterController>();
         cameraContainer.GetChild(0).gameObject.SetActive(true);
         cam = cameraContainer.GetComponentInChildren<Camera>();
+        cam.fieldOfView = 75;
         health = 100;
         yRotation = transform.localEulerAngles.y;
+        appliedYRotationSpeed = yRotationSpeed;
         xRotation = cam.transform.localEulerAngles.x;
+        appliedXRotationSpeed = xRotationSpeed;
         wasStopped = true;
         appliedGravity = gravity / 2;
         gunAnim.speed = .5f;
@@ -198,6 +213,7 @@ public class ControlPC : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            GameManager.gm.GoToScene(0);
         }
     }
 
@@ -233,8 +249,8 @@ public class ControlPC : MonoBehaviour
             // Mouse input
             if (isEyeTracking || (!isEyeTracking && !uiManager.isHUDActive))
             {
-                yRotation += Input.GetAxis("Mouse X") * yRotationSpeed * Time.deltaTime;
-                xRotation -= Input.GetAxis("Mouse Y") * xRotationSpeed * Time.deltaTime;
+                yRotation += Input.GetAxis("Mouse X") * appliedYRotationSpeed * Time.deltaTime;
+                xRotation -= Input.GetAxis("Mouse Y") * appliedXRotationSpeed * Time.deltaTime;
                 xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
                 if (xRotation != cam.transform.eulerAngles.x || yRotation != transform.eulerAngles.y)
@@ -252,6 +268,18 @@ public class ControlPC : MonoBehaviour
                     else if (Input.GetButtonUp("Fire1"))    // if player lets go of fire button
                     {
                         StoppedFiring();
+                    }
+
+                    if (currentWeapon == WeaponType.Sniper)
+                    {
+                        if (Input.GetMouseButton(1))
+                        {
+                            EnterSniperFOV();
+                        }
+                        else if (Input.GetMouseButtonUp(1))
+                        {
+                            LeaveSniperFOV();
+                        }
                     }
                 }
             }
@@ -418,6 +446,7 @@ public class ControlPC : MonoBehaviour
         camAnim.SetBool("isFiringAR", isFiring);
         if (Time.time >= fireTime)
         {
+            Instantiate(assaultRifleSFX[Random.Range(0, assaultRifleSFX.Length)], barrel.position, Quaternion.identity);
             gunAnim.speed = camAnim.speed = fireRateAR;
             fireTime = Time.time + 1 / fireRateAR;
 
@@ -445,13 +474,13 @@ public class ControlPC : MonoBehaviour
 
                     if (hit.collider.gameObject.layer == 10)    // critical shot
                     {
-                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageAR * 2);
+                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR : weaponDamageAR * 2);
                         //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
                         //part.transform.forward = hit.normal;
                     }
                     else
                     {
-                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageAR);
+                        hit.collider.GetComponent<BaddyHitbox>().TakeDamage(IsBeyondEffectiveRange(hit.point) ? weaponDamageAR / 2 : weaponDamageAR);
                         //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
                         //part.transform.forward = hit.normal;
                     }
@@ -466,6 +495,20 @@ public class ControlPC : MonoBehaviour
         }
     }
 
+    bool IsBeyondEffectiveRange(Vector3 target)
+    {
+        float distance = (target = cam.transform.position).sqrMagnitude;
+
+        if (distance > maxEffectiveRange * maxEffectiveRange)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void WeaponFireSR()
     {
         isFiring = true;
@@ -473,13 +516,14 @@ public class ControlPC : MonoBehaviour
         camAnim.SetBool("isFiringSR", isFiring);
         if (Time.time >= fireTime)
         {
+            Instantiate(sniperRifleSFX[Random.Range(0, sniperRifleSFX.Length)], barrel.position, Quaternion.identity);
             gunAnim.speed = camAnim.speed = fireRateSR;
             fireTime = Time.time + 1 / fireRateSR;
 
             Vector3 fireDirection = cam.transform.TransformDirection(Vector3.forward);
             RaycastHit hit;
 
-            if (Physics.SphereCast(cam.transform.position + cam.transform.TransformDirection(Vector3.forward) / 2, .1f,
+            if (Physics.SphereCast(cam.transform.position, .1f,
                 fireDirection, out hit, 500, GameManager.gm.baddyCriticalLayer))    // is it a critical shot?
             {
                 var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
@@ -498,7 +542,7 @@ public class ControlPC : MonoBehaviour
                 }
                 return;
             }
-            if (Physics.Raycast(cam.transform.position + cam.transform.TransformDirection(Vector3.forward) / 2, fireDirection, out hit, 500, weaponLayermask))
+            if (Physics.Raycast(cam.transform.position, fireDirection, out hit, 500, weaponLayermask))
             {
                 var trail = Instantiate(smokeTrailPrefabSR, hit.point, Quaternion.identity);
                 trail.gunBarrel = barrel;
@@ -522,6 +566,22 @@ public class ControlPC : MonoBehaviour
         }
     }
 
+    void EnterSniperFOV()
+    {
+        cam.fieldOfView = 20;
+        uiManager.sniperReticle.gameObject.SetActive(true);
+        appliedXRotationSpeed = xRotationSpeed / 2;
+        appliedYRotationSpeed = yRotationSpeed / 2;
+    }
+
+    public void LeaveSniperFOV()
+    {
+        cam.fieldOfView = 75;
+        uiManager.sniperReticle.gameObject.SetActive(false);
+        appliedXRotationSpeed = xRotationSpeed;
+        appliedYRotationSpeed = yRotationSpeed;
+    }
+
     void WeaponFireGL()
     {
         isFiring = true;
@@ -529,6 +589,7 @@ public class ControlPC : MonoBehaviour
         camAnim.SetBool("isFiringGL", isFiring);
         if (Time.time >= fireTime)
         {
+            Instantiate(grenadeLauncherSFX[Random.Range(0, grenadeLauncherSFX.Length)], barrel.position, Quaternion.identity);
             gunAnim.speed = camAnim.speed = fireRateGL;
             fireTime = Time.time + 1 / fireRateGL;
             Vector3 fireTraj = (Quaternion.AngleAxis(5, cam.transform.TransformDirection(Vector3.left))
@@ -563,6 +624,7 @@ public class ControlPC : MonoBehaviour
     {
         if (!isSwitching && nextWeapon != currentWeapon)
         {
+            LeaveSniperFOV();
             isSwitching = true;
             gunAnim.SetTrigger("switchWeapon");
             gunAnim.speed = timeToSwitchWeapons;
@@ -580,28 +642,32 @@ public class ControlPC : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        StopCoroutine("ShieldRegen");
-        timeSinceDamageTaken = 0;
-        if (shields > 0)
+        if (!isInvincible)
         {
-            shields -= damage;
-        }
-        else
-        {
-            health -= damage;
-        }
+            StopCoroutine("ShieldRegen");
+            timeSinceDamageTaken = 0;
+            if (shields > 0)
+            {
+                shields -= damage;
+            }
+            else
+            {
+                health -= damage;
+            }
 
-        CheckHealth();
+            CheckHealth();
+        }
     }
 
-    public void Heal(int heals)
+    public bool Heal(int heals)
     {
         if (health < 100)
         {
             health += heals;
+            Mathf.Clamp(health, 0, 100);
+            return true;
         }
-
-        Mathf.Clamp(health, 0, 100);
+        return false;
     }
 
     void CheckHealth()
@@ -612,6 +678,7 @@ public class ControlPC : MonoBehaviour
         }
         else
         {
+            uiManager.shields.value = 0;
             if (health <= 0)
             {
 #if UNITY_EDITOR

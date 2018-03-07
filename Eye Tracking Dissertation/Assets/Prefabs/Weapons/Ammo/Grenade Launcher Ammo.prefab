@@ -185,6 +185,10 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 4096
+  impactSFX:
+  - {fileID: 82954269165042932, guid: 2dbcf7224b513dc4da19b600a4499c0f, type: 2}
+  - {fileID: 82639798843063568, guid: 2b41ea0f135d73c49bfd554c271b85d2, type: 2}
+  - {fileID: 82506699670264564, guid: b8d36cdf2cb514f408d02092dc7b56ad, type: 2}
 --- !u!135 &135052279296628574
 SphereCollider:
   m_ObjectHideFlags: 1

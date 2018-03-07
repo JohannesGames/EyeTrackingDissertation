@@ -14,6 +14,8 @@ public class GrenadeLauncherAmmo : MonoBehaviour
     public LayerMask enemyLayer;
     public LayerMask playerLayer;
     private bool hasExploded;
+    [SerializeField]
+    private AudioSource[] impactSFX;
 
     private void Start()
     {
@@ -62,6 +64,7 @@ public class GrenadeLauncherAmmo : MonoBehaviour
                 GameManager.gm.pc.camAnim.speed = 1;
                 GameManager.gm.pc.camAnim.SetTrigger("lilExplosion");
             }
+            Instantiate(impactSFX[Random.Range(0, impactSFX.Length)], transform.position, Quaternion.identity);
             Instantiate(explosionVFX, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }

@@ -694,12 +694,13 @@ MonoBehaviour:
   spawnFrequency: 15
   spawnAmount: 5
   targetPositions: []
-  damage: 45
+  damage: 100
   attackCooldown: 8
   chargeLength: 5
   attackBeam: {fileID: 120817476200845436}
   weaponCharger: {fileID: 198178187743466690}
-  weaponChargerChild: {fileID: 0}
+  attackVFX: {fileID: 198074240163737948, guid: 0a7540e42218d5a48a01f24ff88005c4,
+    type: 2}
 --- !u!114 &114587492044625414
 MonoBehaviour:
   m_ObjectHideFlags: 1

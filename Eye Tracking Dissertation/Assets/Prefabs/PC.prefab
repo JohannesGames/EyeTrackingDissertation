@@ -240,9 +240,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
-  field of view: 60
+  field of view: 75
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -395,8 +395,11 @@ MonoBehaviour:
   cameraContainer: {fileID: 4824592423153394}
   cam: {fileID: 0}
   yRotationSpeed: 45
+  appliedYRotationSpeed: 45
   xRotationSpeed: 45
+  appliedXRotationSpeed: 45
   uiManager: {fileID: 0}
+  isInvincible: 0
   health: 100
   shields: 100
   shieldCooldownLength: 3
@@ -407,23 +410,36 @@ MonoBehaviour:
     m_Bits: 1792
   timeToSwitchWeapons: 1
   currentWeapon: 0
-  weaponDamageAR: 5
-  fireRateAR: 8
-  spreadDegreeAR: 1.25
-  timeToMaxSpreadAR: 1
+  weaponDamageAR: 10
+  fireRateAR: 20
+  spreadDegreeAR: 2.5
+  timeToMaxSpreadAR: 0
   smokeTrailPrefabAR: {fileID: 114779827387752216, guid: 6a2c12ffa3e53ee4f897a6beb95383c9,
     type: 2}
   onHitParticleAR: {fileID: 0}
+  maxEffectiveRange: 7.5
+  assaultRifleSFX:
+  - {fileID: 82244126293634806, guid: 699a8901127036b4d9900169af05704e, type: 2}
+  - {fileID: 82644835837984378, guid: 793bce99def442349947c09b9deea843, type: 2}
+  - {fileID: 82832325935266788, guid: 66d5cbd86a05c374abe231e72af9859a, type: 2}
   weaponDamageSR: 20
   fireRateSR: 1.5
   smokeTrailPrefabSR: {fileID: 114779827387752216, guid: 3f52099b4e9b0ac4b9487671109eba71,
     type: 2}
+  sniperRifleSFX:
+  - {fileID: 82718737638550012, guid: f4db4b094bb4498478da8d4314da0cc4, type: 2}
+  - {fileID: 82351346856142366, guid: c88a179eb61804c42a087be996710e4f, type: 2}
+  - {fileID: 82737456411238270, guid: 19db250ee1fa7dd418bd1fda3f564504, type: 2}
   weaponDamageGL: 25
   fireRateGL: 1
   ammoPrefabGL: {fileID: 114472707922070236, guid: 6fc4c9fc106ab43488b0ad91dd810939,
     type: 2}
   knockbackForceGL: 5
   fireForceGL: 40
+  grenadeLauncherSFX:
+  - {fileID: 82011154669089528, guid: 8ab1ef2d62eb18c488800652b5201345, type: 2}
+  - {fileID: 82912644484903204, guid: 3ff25bd5f167a89469f6565fe6a223e3, type: 2}
+  - {fileID: 82864233621937172, guid: ecc233d651f611f49bd90d86f1cd1c72, type: 2}
   isEyeTracking: 0
 --- !u!124 &124501458026701390
 Behaviour:

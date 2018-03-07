@@ -27,7 +27,9 @@ public class Checkpoint : MonoBehaviour
     public HUDMessage[] hudMessageBodies;
 
     // Wave
+    private bool hasSpawned;
     public float spawnDelay;
+    private List<int> pointsUsed = new List<int>();
     int smallKillCounter = 0;
     int smallKillsRequired = 0;
     int bigKillCounter = 0;
@@ -35,7 +37,7 @@ public class Checkpoint : MonoBehaviour
 
     void Update()
     {
-        if (checkpiontType == CheckpointTypes.Wave)
+        if (checkpiontType == CheckpointTypes.Wave && hasSpawned)
         {
             if ((bigKillCounter > 0 || smallKillCounter > 0) && 
                 smallKillCounter >= smallKillsRequired && bigKillCounter >= bigKillsRequired)
@@ -114,7 +116,7 @@ public class Checkpoint : MonoBehaviour
             {
                 for (int i = 0; i < baddy.amountToSpawn; i++)
                 {
-                    var _baddy = Instantiate(baddy.prefabToSpawn, baddy.spawnPoints[Random.Range(0, baddy.spawnPoints.Length - 1)].position + Random.insideUnitSphere, Quaternion.identity);
+                    var _baddy = Instantiate(baddy.prefabToSpawn, ChooseSpawnPoint(baddy) + Random.insideUnitSphere, Quaternion.identity);
                     if (_baddy.enemySize == Baddy.EnemySizes.big)
                     {
                         bigKillsRequired++;
@@ -144,6 +146,37 @@ public class Checkpoint : MonoBehaviour
                     }
                 }
             }
+            hasSpawned = true;
+        }
+    }
+
+    Vector3 ChooseSpawnPoint(BaddiesToSpawn baddy)
+    {
+        if (pointsUsed.Count < baddy.amountToSpawn && pointsUsed.Count < baddy.spawnPoints.Length &&
+            baddy.spawnPoints.Length > 1 && pointsUsed.Count > 0)
+        {
+            int index = -1;
+            bool chosen = false;
+            while (!chosen)
+            {
+                chosen = true;
+                index = Random.Range(0, baddy.spawnPoints.Length);
+                for (int i = 0; i < pointsUsed.Count; i++)
+                {
+                    if (index == pointsUsed[i])
+                    {
+                        chosen = false;
+                    }
+                }
+            }
+            pointsUsed.Add(index);
+            return baddy.spawnPoints[index].position;
+        }
+        else
+        {
+            int index = Random.Range(0, baddy.spawnPoints.Length - 1);
+            pointsUsed.Add(index);
+            return baddy.spawnPoints[index].position;
         }
     }
 

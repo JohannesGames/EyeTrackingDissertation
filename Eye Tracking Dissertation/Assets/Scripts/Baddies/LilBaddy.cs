@@ -33,16 +33,6 @@ public class LilBaddy : MonoBehaviour
         cc = GetComponent<CharacterController>();
         baddy = GetComponent<Baddy>();
         Invoke("FindPC", 0);
-        InvokeRepeating("Orientation", 0, .5f);
-    }
-
-    void Orientation()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1, GameManager.gm.terrainLayer))
-        {
-            transform.up = hit.normal;
-        }
     }
 
     void FindPC()

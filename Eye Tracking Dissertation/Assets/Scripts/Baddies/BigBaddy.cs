@@ -30,7 +30,8 @@ public class BigBaddy : MonoBehaviour
     private float chargeTimer;
     public LineRenderer attackBeam;
     public ParticleSystem weaponCharger;
-    public ParticleSystem weaponChargerChild;
+    private ParticleSystem weaponChargerChild;
+    public ParticleSystem attackVFX;
 
     void Start()
     {
@@ -44,17 +45,18 @@ public class BigBaddy : MonoBehaviour
     }
 
 
-    void Update()
+    void LateUpdate()
     {
         if (baddy.isDestroyed)
         {
             StopAllCoroutines();
+            Destroy(gameObject);
         }
     }
 
     private void FixedUpdate()
     {
-        if (Time.time > nextAttackTime && Time.time >= checkTimePC)
+        if (!baddy.isDestroyed && Time.time > nextAttackTime && Time.time >= checkTimePC)
         {
             checkTimePC = isCharging ? 0 : Time.time + .5f;
             distancePC = Vector3.Distance(GameManager.gm.pc.transform.position, transform.position);
@@ -144,6 +146,17 @@ public class BigBaddy : MonoBehaviour
             yield return null;
         }
 
+        // Resolve attack
+        Vector3 attackPos = GameManager.gm.pc.transform.position + Random.insideUnitSphere * 2;
+        Instantiate(attackVFX, attackPos, Quaternion.identity);
+        GameManager.gm.pc.BigBaddyLanding();
+        Collider[] hits = Physics.OverlapSphere(attackPos, 1, GameManager.gm.playerLayer);
+        if (hits.Length > 0)
+        {
+            GameManager.gm.pc.TakeDamage(damage);
+        }
+        //
+
         attackBeam.gameObject.SetActive(false);
         isCharging = false;
         weaponChargerChild.Stop();
@@ -154,8 +167,8 @@ public class BigBaddy : MonoBehaviour
 
     void UpdateAttackBeam(float progress)
     {
-        attackBeam.startWidth = attackBeam.endWidth = Mathf.Lerp(.001f, .2f, progress);
+        attackBeam.startWidth = attackBeam.endWidth = Mathf.Lerp(.001f, .1f, progress);
         attackBeam.SetPosition(0, baddy.criticalPoint.transform.position);
-        attackBeam.SetPosition(1, GameManager.gm.pc.transform.position);
+        attackBeam.SetPosition(1, GameManager.gm.pc.transform.position + Random.insideUnitSphere * .5f * progress);
     }
 }
