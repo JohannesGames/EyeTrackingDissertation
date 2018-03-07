@@ -4419,11 +4419,22 @@ MonoBehaviour:
 
       to switch weapons'
   - delay: 0
-    messageBody: 'Assault rifle = good at close range
+    messageBody: 'Assault rifle
 
-      Grenade launcher = good against groups
 
-      Sniper = good at long range'
+      good at short range'
+  - delay: 0
+    messageBody: 'Grenade launcher
+
+
+      Good against groups
+
+'
+  - delay: 0
+    messageBody: 'Sniper
+
+
+      good at long range'
   spawnDelay: 4
 --- !u!4 &1115941916 stripped
 Transform:

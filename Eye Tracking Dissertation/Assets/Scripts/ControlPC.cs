@@ -542,7 +542,7 @@ public class ControlPC : MonoBehaviour
                     //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
                     //part.transform.forward = hit.normal;
                 }
-                else
+                else if (hit.collider.gameObject.layer == 9)
                 {
                     hit.collider.GetComponent<BaddyHitbox>().TakeDamage(weaponDamageSR);
                     //var part = Instantiate(onHitParticleAR, hit.point, Quaternion.identity);
