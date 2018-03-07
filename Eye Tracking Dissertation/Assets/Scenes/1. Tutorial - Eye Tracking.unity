@@ -880,7 +880,7 @@ Prefab:
     - target: {fileID: 114558718576992130, guid: 7a6e7b5162c9e394aae8a92f01b2d6f5,
         type: 2}
       propertyPath: isEyeTracking
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a6e7b5162c9e394aae8a92f01b2d6f5, type: 2}
@@ -1764,6 +1764,24 @@ Prefab:
       propertyPath: centreInput
       value: 
       objectReference: {fileID: 1210219551}
+    - target: {fileID: 1147636128461532, guid: 91b2f12bcdf0bd84b966615be7020dbb, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1068514824400706, guid: 91b2f12bcdf0bd84b966615be7020dbb, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224412625398407806, guid: 91b2f12bcdf0bd84b966615be7020dbb,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000024796
+      objectReference: {fileID: 0}
+    - target: {fileID: 224412625398407806, guid: 91b2f12bcdf0bd84b966615be7020dbb,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 420.45
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91b2f12bcdf0bd84b966615be7020dbb, type: 2}
   m_IsPrefabParent: 0
@@ -4644,9 +4662,8 @@ MonoBehaviour:
   objectsToActivate: []
   hudMessageBodies:
   - delay: 0
-    messageBody: 'Press alt
-
-      to switch weapons'
+    messageBody: "Press alt to switch weapons\n\nthen look from the centre \nto the
+      corresponding screen edge\nand back to the centre"
   - delay: 0
     messageBody: 'Assault rifle
 
@@ -6074,6 +6091,11 @@ MonoBehaviour:
   objectsToDelete: []
   objectsToActivate: []
   hudMessageBodies:
+  - delay: 0
+    messageBody: 'To input eye instructions:
+
+
+      look from centre of screen to a a screen edge and back again'
   - delay: 0
     messageBody: "Use mouse \nto look around"
   - delay: 0

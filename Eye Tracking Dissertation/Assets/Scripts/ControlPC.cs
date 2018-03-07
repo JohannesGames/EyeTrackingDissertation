@@ -228,7 +228,7 @@ public class ControlPC : MonoBehaviour
 
     void GetPlayerInput()
     {
-        if (!uiManager.hudMessage)
+        if ((isEyeTracking || (!isEyeTracking && !uiManager.hudMessage)))   // if it's 
         {
             // Keyboard input
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));

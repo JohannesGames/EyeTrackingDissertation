@@ -8,9 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/0. Menu.unity
     guid: 4e9239e056562f342afb19ecbaf7c65f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/1. Tutorial.unity
     guid: b429a32b646eb2546b0c8bfcd9cd6d31
   - enabled: 1
+    path: Assets/Scenes/1. Tutorial - Eye Tracking.unity
+    guid: ef171ade82d339e4aa25e305b6837735
+  - enabled: 0
     path: Assets/Scenes/2. Level.unity
     guid: 4d87df8a52f04ba47b2080855f0878f0
+  - enabled: 1
+    path: Assets/Scenes/2. Level - Eye Tracking.unity
+    guid: 899395af207dd404e91e3964465671b1

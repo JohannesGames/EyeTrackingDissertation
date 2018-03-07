@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Tobii.Gaming;
 
 public class MainMenuButton : MonoBehaviour
 {
@@ -17,6 +18,12 @@ public class MainMenuButton : MonoBehaviour
     Vector3 smallSize;
     Vector3 bigSize = new Vector3(2, 2, 2);
 
+    // Tobii stuff
+    private bool beenLookedAt;
+    private GazePoint gp;
+    private GraphicRaycaster gr;
+    private List<RaycastResult> objectsHitTobii = new List<RaycastResult>();
+
 
     void Start()
     {
@@ -24,6 +31,33 @@ public class MainMenuButton : MonoBehaviour
         thisButton = GetComponent<Button>();
         eTrigger = GetComponent<EventTrigger>();
         AddEventTriggers();
+    }
+
+    private void Update()
+    {
+        if (GameManager.gm.pc.isEyeTracking)    // if eye tracking is enabled check whether player is looking at this button
+        {
+            gp = TobiiAPI.GetGazePoint();
+            PointerEventData cursor = new PointerEventData(EventSystem.current)
+            {
+                position = gp.Screen
+            };
+            EventSystem.current.RaycastAll(cursor, objectsHitTobii);
+
+            if (!beenLookedAt)
+            {
+                if (objectsHitTobii.Count > 0)
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+
+            objectsHitTobii.Clear();
+        }
     }
 
     private void AddEventTriggers()
