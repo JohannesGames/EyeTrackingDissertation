@@ -562,6 +562,7 @@ public class ControlPC : MonoBehaviour
         cam.fieldOfView = 20;
         isScoped = true;
         uiManager.sniperReticle.gameObject.SetActive(true);
+        uiManager.sniperScope.gameObject.SetActive(true);
         appliedXRotationSpeed = xRotationSpeed / 2;
         appliedYRotationSpeed = yRotationSpeed / 2;
     }
@@ -571,6 +572,7 @@ public class ControlPC : MonoBehaviour
         cam.fieldOfView = 75;
         isScoped = false;
         uiManager.sniperReticle.gameObject.SetActive(false);
+        uiManager.sniperScope.gameObject.SetActive(false);
         appliedXRotationSpeed = xRotationSpeed;
         appliedYRotationSpeed = yRotationSpeed;
     }

@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     private Vector2 currentCentreSize;
     public Image[] centrePieces;
     public RectTransform sniperReticle;
+    public RectTransform sniperScope;
     public RectTransform hudMessagePanel;
     public Text hudMessageBody;
     public Button hudMessageConfirm;

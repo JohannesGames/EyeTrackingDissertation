@@ -35,29 +35,49 @@ public class MainMenuButton : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.gm.pc.isEyeTracking)    // if eye tracking is enabled check whether player is looking at this button
+        gp = TobiiAPI.GetGazePoint();
+        PointerEventData cursor = new PointerEventData(EventSystem.current)
         {
-            gp = TobiiAPI.GetGazePoint();
-            PointerEventData cursor = new PointerEventData(EventSystem.current)
-            {
-                position = gp.Screen
-            };
-            EventSystem.current.RaycastAll(cursor, objectsHitTobii);
+            position = gp.Screen
+        };
+        EventSystem.current.RaycastAll(cursor, objectsHitTobii);
 
-            if (!beenLookedAt)
+        if (!beenLookedAt)
+        {
+            if (objectsHitTobii.Count > 0)
             {
-                if (objectsHitTobii.Count > 0)
+                for (int i = 0; i < objectsHitTobii.Count; i++)
                 {
-
+                    if (objectsHitTobii[i].gameObject == gameObject)    // if looking at this button
+                    {
+                        beenLookedAt = true;
+                        ScaleOnMouseOver();
+                    }
                 }
             }
-            else
-            {
-
-            }
-
-            objectsHitTobii.Clear();
         }
+        else
+        {
+            if (objectsHitTobii.Count > 0)
+            {
+                beenLookedAt = false;
+                for (int i = 0; i < objectsHitTobii.Count; i++)
+                {
+                    if (objectsHitTobii[i].gameObject == gameObject)    // if looking at this button keep current scaled state
+                    {
+                        beenLookedAt = true;
+                        break;
+                    }
+                }
+
+                if (!beenLookedAt)  // if looking elsewhere after scaling, scale back to original size
+                {
+                    ScaleOnMouseExit();
+                }
+            }
+        }
+
+        objectsHitTobii.Clear();
     }
 
     private void AddEventTriggers()
