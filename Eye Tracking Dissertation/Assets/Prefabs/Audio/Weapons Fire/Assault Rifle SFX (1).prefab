@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4267834097948492}
   - component: {fileID: 82644835837984378}
   - component: {fileID: 114766135226841882}
+  - component: {fileID: 165241345370712680}
   m_Layer: 0
   m_Name: Assault Rifle SFX (1)
   m_TagString: Untagged
@@ -52,7 +53,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a523bdb789c918144bad5b64b637ac67, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -133,3 +134,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyIn: 2
+--- !u!165 &165241345370712680
+AudioHighPassFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527219948675974}
+  m_Enabled: 1
+  m_CutoffFrequency: 200
+  m_HighpassResonanceQ: 1

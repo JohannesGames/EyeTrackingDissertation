@@ -34,15 +34,30 @@ public class BigBaddy : MonoBehaviour
     private ParticleSystem weaponChargerChild;
     public ParticleSystem attackVFX;
 
+    // Audio
+    [Space(10)]
+    [Header("Audio")]
+    public AudioSource sonicBoom;
+    public AudioSource[] spawnWarnSFX;
+    public AudioSource[] hotDropSFX;
+    public AudioSource[] landingSFX;
+
     void Start()
     {
         positionLastFrame = transform.position + Vector3.up;
+        landingSpot = transform.position;
+        startPosition = transform.position = landingSpot + Vector3.up * startingAltitude + Vector3.left * Random.Range(0, 100) + Vector3.forward * Random.Range(0, 100);
         baddy = GetComponent<Baddy>();
-        StartCoroutine("Descent");
         checkTimePC = Time.time + .5f;
         weaponChargerChild = weaponCharger.GetComponentInChildren<ParticleSystem>();
         nextAttackTime = Time.time + timeToLand + 1;
         attackBeam.SetPosition(0, attackBeam.transform.position);
+        Invoke("BeginDescent", Random.Range(0, 2));
+    }
+
+    void BeginDescent()
+    {
+        StartCoroutine("Descent");
     }
 
 
@@ -78,7 +93,6 @@ public class BigBaddy : MonoBehaviour
                 weaponChargerChild.Stop();
                 var emission = weaponCharger.emission;
                 emission.rateOverTime = 0;
-                attackBeam.gameObject.SetActive(false);
                 StopCoroutine("ChargeWeapon");
             }
         }
@@ -88,9 +102,10 @@ public class BigBaddy : MonoBehaviour
     {
         float timer = 0;
         float progress = 0;
+        bool landingSFXPlayed = false;
 
-        landingSpot = transform.position;
-        startPosition = transform.position = landingSpot + Vector3.up * startingAltitude + Vector3.left * Random.Range(0, 100) + Vector3.forward * Random.Range(0, 100);
+        Instantiate(sonicBoom, transform.position, Quaternion.identity);
+        AudioSource hotDrop = Instantiate(hotDropSFX[Random.Range(0, hotDropSFX.Length)], transform);
 
         while (progress < 1)
         {
@@ -99,9 +114,16 @@ public class BigBaddy : MonoBehaviour
             transform.position = Vector3.Lerp(startPosition, landingSpot, landingVelocity.Evaluate(progress));
             transform.up = positionLastFrame - transform.position;
             positionLastFrame = transform.position;
+
+            if (progress > .9 && !landingSFXPlayed)
+            {
+                landingSFXPlayed = true;
+                Instantiate(landingSFX[Random.Range(0, landingSFX.Length)], transform);
+            }
             yield return null;
         }
         landingVFX.Play();
+        hotDrop.Stop();
         Destroy(landingVFX.gameObject, 3);
         GameManager.gm.pc.BigBaddyLanding();
         nextAttackTime = Time.time + 1;
@@ -114,7 +136,7 @@ public class BigBaddy : MonoBehaviour
         while (!baddy.isDestroyed)
         {
             yield return new WaitForSeconds(spawnFrequency - 2);
-            // Signal spawn coming 2 seconds before
+            Instantiate(spawnWarnSFX[Random.Range(0, spawnWarnSFX.Length)], transform.position, Quaternion.identity);
 
             yield return new WaitForSeconds(2);
             StartCoroutine("SpawnThem");
@@ -123,6 +145,7 @@ public class BigBaddy : MonoBehaviour
 
     IEnumerator SpawnThem()
     {
+
         for (int i = 0; i < spawnAmount; i++)
         {
             var lilGuy = Instantiate(GameManager.gm.lilBaddyPrefab, lilBaddySpawnPoint.position + Random.insideUnitSphere, Quaternion.identity);

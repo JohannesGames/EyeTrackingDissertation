@@ -561,17 +561,17 @@ public class ControlPC : MonoBehaviour
     {
         cam.fieldOfView = 20;
         isScoped = true;
-        uiManager.sniperReticle.gameObject.SetActive(true);
+        uiManager.reticle.gameObject.SetActive(false);
         uiManager.sniperScope.gameObject.SetActive(true);
-        appliedXRotationSpeed = xRotationSpeed / 2;
-        appliedYRotationSpeed = yRotationSpeed / 2;
+        appliedXRotationSpeed = xRotationSpeed / 3;
+        appliedYRotationSpeed = yRotationSpeed / 3;
     }
 
     public void LeaveSniperFOV()
     {
         cam.fieldOfView = 75;
         isScoped = false;
-        uiManager.sniperReticle.gameObject.SetActive(false);
+        uiManager.reticle.gameObject.SetActive(true);
         uiManager.sniperScope.gameObject.SetActive(false);
         appliedXRotationSpeed = xRotationSpeed;
         appliedYRotationSpeed = yRotationSpeed;
@@ -622,7 +622,7 @@ public class ControlPC : MonoBehaviour
             LeaveSniperFOV();
             isSwitching = true;
             gunAnim.SetTrigger("switchWeapon");
-            gunAnim.speed = timeToSwitchWeapons;
+            gunAnim.speed = 1 / timeToSwitchWeapons;
             yield return new WaitForSeconds(timeToSwitchWeapons);
             currentWeapon = nextWeapon;
             isSwitching = false;

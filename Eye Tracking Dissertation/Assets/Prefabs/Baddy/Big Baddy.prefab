@@ -701,6 +701,18 @@ MonoBehaviour:
   weaponCharger: {fileID: 198178187743466690}
   attackVFX: {fileID: 198074240163737948, guid: 0a7540e42218d5a48a01f24ff88005c4,
     type: 2}
+  sonicBoom: {fileID: 82704003495191104, guid: 43659cbdb6f0bd24cae94ea6b2d55fd5, type: 2}
+  spawnWarnSFX:
+  - {fileID: 82225086403826030, guid: 23267c28f0b9d3542aecafd35396bfe4, type: 2}
+  - {fileID: 82668282149722662, guid: 57797d3a0c0219249ad8560208706c6b, type: 2}
+  - {fileID: 82574912216282924, guid: 2ac47ada652117c4fa72667c8ef7fb5c, type: 2}
+  hotDropSFX:
+  - {fileID: 82524709099069006, guid: 04141d364d044eb40b7fde2f46cf6b7d, type: 2}
+  - {fileID: 82814093881279018, guid: 8376ad012dbdf984b8156226b3a4a2b6, type: 2}
+  - {fileID: 82803412701723038, guid: 4a339dc73463e2044a02e9f02dfba66e, type: 2}
+  landingSFX:
+  - {fileID: 82849214462751736, guid: 47d59d4e8b0076344a82ec507714759e, type: 2}
+  - {fileID: 82900293430754874, guid: 6d74532bdcaede941ab0163cf3e6cdb8, type: 2}
 --- !u!114 &114587492044625414
 MonoBehaviour:
   m_ObjectHideFlags: 1

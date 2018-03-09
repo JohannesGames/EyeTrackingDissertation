@@ -7,6 +7,7 @@ using Tobii.Gaming;
 
 public class MainMenuButton : MonoBehaviour
 {
+    public bool isEyeTracking;
     public int buildIndex;
     Button thisButton;
     EventTrigger eTrigger;
@@ -82,17 +83,21 @@ public class MainMenuButton : MonoBehaviour
 
     private void AddEventTriggers()
     {
-        // Add mouse over trigger
         EventTrigger.Entry entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerEnter;
-        entry.callback.AddListener((eventData) => { ScaleOnMouseOver(); });
-        eTrigger.triggers.Add(entry);
 
-        // Add mouse exit trigger
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerExit;
-        entry.callback.AddListener((eventData) => { ScaleOnMouseExit(); });
-        eTrigger.triggers.Add(entry);
+        if (!isEyeTracking)
+        {
+            // Add mouse over trigger
+            entry.eventID = EventTriggerType.PointerEnter;
+            entry.callback.AddListener((eventData) => { ScaleOnMouseOver(); });
+            eTrigger.triggers.Add(entry);
+
+            // Add mouse exit trigger
+            entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerExit;
+            entry.callback.AddListener((eventData) => { ScaleOnMouseExit(); });
+            eTrigger.triggers.Add(entry);
+        }
 
         // Add mouse click trigger
         entry = new EventTrigger.Entry();

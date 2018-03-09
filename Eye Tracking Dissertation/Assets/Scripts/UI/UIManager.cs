@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
     private Vector2 hudCentreSize;
     private Vector2 currentCentreSize;
     public Image[] centrePieces;
-    public RectTransform sniperReticle;
+    public RectTransform reticle;
     public RectTransform sniperScope;
     public RectTransform hudMessagePanel;
     public Text hudMessageBody;
@@ -121,13 +121,6 @@ public class UIManager : MonoBehaviour
     IEnumerator LerpHUDCentreOpen()
     {
         HUDCentre.gameObject.SetActive(true);
-#if UNITY_EDITOR
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-#else
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
-#endif
         if (!pc.isEyeTracking) pc.StoppedFiring();
         float timer = 0;
         float progress = 0;

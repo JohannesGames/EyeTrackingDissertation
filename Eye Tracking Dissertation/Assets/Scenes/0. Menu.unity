@@ -349,6 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a56fbebfdfd59504db8f706b8931e4d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEyeTracking: 1
   buildIndex: 2
   selectGrowTime: 2
   selectShrinkTime: 0.5
@@ -577,6 +578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a56fbebfdfd59504db8f706b8931e4d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEyeTracking: 1
   buildIndex: 1
   selectGrowTime: 2
   selectShrinkTime: 0.5
@@ -846,6 +848,21 @@ MonoBehaviour:
   pc: {fileID: 0}
   hudMessagesToBeDisplayed: []
   currentCheckpoint: {fileID: 0}
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  baddyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  baddyBodyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  baddyCriticalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bigBaddyPrefab: {fileID: 0}
   lilBaddyPrefab: {fileID: 0}
 --- !u!4 &1338800019
