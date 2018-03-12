@@ -41,6 +41,7 @@ public class BigBaddy : MonoBehaviour
     public AudioSource[] spawnWarnSFX;
     public AudioSource[] hotDropSFX;
     public AudioSource[] landingSFX;
+    public AudioSource explodeySFX;
 
     void Start()
     {
@@ -66,6 +67,7 @@ public class BigBaddy : MonoBehaviour
         if (baddy.isDestroyed)
         {
             StopAllCoroutines();
+            Instantiate(explodeySFX, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

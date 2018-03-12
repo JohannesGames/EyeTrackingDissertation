@@ -713,6 +713,8 @@ MonoBehaviour:
   landingSFX:
   - {fileID: 82849214462751736, guid: 47d59d4e8b0076344a82ec507714759e, type: 2}
   - {fileID: 82900293430754874, guid: 6d74532bdcaede941ab0163cf3e6cdb8, type: 2}
+  explodeySFX: {fileID: 82194061810261392, guid: 158e5bc490279a445a8a7999ca34636c,
+    type: 2}
 --- !u!114 &114587492044625414
 MonoBehaviour:
   m_ObjectHideFlags: 1
